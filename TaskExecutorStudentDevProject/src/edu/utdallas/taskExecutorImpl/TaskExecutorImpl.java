@@ -16,15 +16,13 @@ public class TaskExecutorImpl implements TaskExecutor
 		Runnable TaskThread = new Runnable() {
 			public void run()
 			{
-				while(true) {
-					Task task = fifo.fetch();
-					
-					try {
-						task.execute();
-					}
-					catch(Exception e) {
-						//System.out.println(e.getMessage());
-					}
+				Task task = fifo.fetch();
+				
+				try {
+					task.execute();
+				}
+				catch(Exception e) {
+					//System.out.println(e.getMessage());
 				}
 			}
 		};

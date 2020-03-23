@@ -4,10 +4,10 @@ import edu.utdallas.taskExecutor.Task;
 
 public class BlockingFIFO {
 	
-	Task[] buffer;
-	int nextin, nextout;
-	int count;
-	Object full, empty;
+	public Task[] buffer;
+	public int nextin, nextout;
+	public int count;
+	public Object full, empty;
 	
 	public BlockingFIFO(int N) {
 		buffer = new Task[N];
@@ -19,10 +19,17 @@ public class BlockingFIFO {
 	}
 	
 	public void append(Task task){
-		synchronized(this) {
-			if(count == buffer.length) {
+		while(count == buffer.length) {
+			try {
 				full.wait();
 			}
+			catch(InterruptedException e) {
+				Thread.currentThread().interrupt(); 
+				System.out.println("Append Thread interrupted");
+			}
+		}
+		
+		synchronized(this) {
 			buffer[nextin] = task;
 			nextin = (nextin + 1) % buffer.length;
 			count++;
@@ -31,10 +38,17 @@ public class BlockingFIFO {
 	}
 	
 	public Task fetch(){
-		synchronized(this) {
-			if(count == 0) {
+		while(count == 0) {
+			try {
 				empty.wait();
 			}
+			catch(InterruptedException e) {
+				Thread.currentThread().interrupt(); 
+	            System.out.println("Fetch Thread interrupted");
+			}
+		}
+		
+		synchronized(this) {
 			Task task = buffer[nextout];
 			nextout = (nextin + 1) % buffer.length;
 			count--;
