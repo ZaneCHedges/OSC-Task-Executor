@@ -6,6 +6,10 @@ import edu.utdallas.taskExecutor.TaskExecutor;
 public class TaskExecutorImpl implements TaskExecutor
 {
 
+	public TaskExecutorImpl(int numThreads) {
+		// TODO
+	}
+	
 	@Override
 	public void addTask(Task task)
 	{
