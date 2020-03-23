@@ -18,39 +18,28 @@ public class BlockingFIFO {
 		empty = new Object();
 	}
 	
-	public void append(Task task) {
-		try {
-			synchronized(this) {
-				if(count == buffer.length) {
-					full.wait();
-				}
-				buffer[nextin] = task;
-				nextin = (nextin + 1) % buffer.length;
-				count++;
-				empty.notify();
+	public void append(Task task){
+		synchronized(this) {
+			if(count == buffer.length) {
+				full.wait();
 			}
-		}
-		catch(Exception e) {
-			System.out.println(e.getMessage());
+			buffer[nextin] = task;
+			nextin = (nextin + 1) % buffer.length;
+			count++;
+			empty.notify();
 		}
 	}
 	
-	public Task fetch() {
-		try {
-			synchronized(this) {
-				if(count == 0) {
-					empty.wait();
-				}
-				Task task = buffer[nextout];
-				nextout = (nextin + 1) % buffer.length;
-				count--;
-				full.notify();
-				return task;
+	public Task fetch(){
+		synchronized(this) {
+			if(count == 0) {
+				empty.wait();
 			}
-		}
-		catch(Exception e) {
-			System.out.println(e.getMessage());
-			return null;
+			Task task = buffer[nextout];
+			nextout = (nextin + 1) % buffer.length;
+			count--;
+			full.notify();
+			return task;
 		}
 	}
 }
