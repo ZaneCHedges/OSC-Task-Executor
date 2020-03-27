@@ -26,11 +26,13 @@ public class TaskExecutorSimpleTest
 		};
 		
 		Thread insertThread = new Thread(inserter);
+		insertThread.setName("Inserter Thread");
 		insertThread.start();
 	}
 
 	public static void main(String args[])
 	{
+		Thread.currentThread().setName("Main Thread");
 		TaskExecutorSimpleTest app = new TaskExecutorSimpleTest();
 		app.runTest();
 	}
